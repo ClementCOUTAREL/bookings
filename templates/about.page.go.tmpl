@@ -1,0 +1,21 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>
+        This is the about page
+      </h1>
+
+      <p>This came from the handler : {{index .StringMap "test" }}</p>
+      {{if ne (index .StringMap "ip") ""}}
+        <p>The ip address : {{index .StringMap "ip"}}</p>
+      {{else}}
+        <p>Unknown IP address</p>
+        {{end}}
+    </div>
+  </div>
+</div>
+
+{{end}}

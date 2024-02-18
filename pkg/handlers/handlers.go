@@ -51,8 +51,12 @@ func (repo *Repository) Majors(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "majors.page.go.tmpl", &models.TemplateData{})
 }
 
-func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
+func (repo *Repository) ReservationAvailability(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "reservation.page.go.tmpl", &models.TemplateData{})
+}
+
+func (repo *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "make_reservation.page.go.tmpl", &models.TemplateData{})
 }
 
 func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {

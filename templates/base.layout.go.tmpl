@@ -11,8 +11,6 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
 
-
-
     {{block "css" .}}
 
     {{end}}
@@ -108,7 +106,8 @@
       //Date picker
       const elem = document.getElementById('reservation-date')
       const rangepicker = new DateRangePicker(elem, {
-        format: "yyyy-mm-dd"
+        format: "yyyy-mm-dd",
+        autohide:true
       })
 
       //Notifications
@@ -133,7 +132,7 @@
       }
       const button = document.getElementById("main-btn").addEventListener("click", function () {
         let html = /*html*/`
-          <form id="check availability-form" action="" method="post" class="needs-validation" novalidate>
+          <form id="check-availability-form" action="" method="post" class="needs-validation" novalidate>
             <div class="row">
               <div class="col">
                 <div class="row" id="reservation-dates-modal">
@@ -150,7 +149,17 @@
         `
         attention.custom({
           msg: html,
-          title: "Choose your dates"
+          title: "Choose your dates",
+          callback: function(result){
+            let form = document.getElementById("check-availability-form")
+            let formData = new FormData(form)
+            formData.append("csrf_token", "{{.CSRFToken}}")
+
+            fetch('/reservation-availability',{
+              method:"post",
+              body:formData,
+            })
+          }
         })
       })
 
@@ -215,7 +224,7 @@
             title = ""
           } = defaults
 
-          const { value: formValues } = await Swal.fire({
+          const { value: result } = await Swal.fire({
             title: title,
             html: msg,
             background: false,
@@ -236,9 +245,16 @@
               ]
             }
           })
-
-          if (formValues) {
-            Swal.fire(JSON.stringify(formValues))
+          if(defaults.dismiss !== Swal.DismissReason.cancel){
+            if (defaults.value !== ""){
+              if (defaults.callback !== undefined){
+                defaults.callback(result)
+              }
+            } else {
+              c.callback(false)
+            }
+          } else {
+            c.callback(false)
           }
         }
 

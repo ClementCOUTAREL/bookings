@@ -9,6 +9,7 @@ import (
 
 	"github.com/coutarel/bookings/pkg/config"
 	"github.com/coutarel/bookings/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 // var functions = template.FuncMap{}
@@ -19,12 +20,12 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func addDefaultData(td *models.TemplateData) *models.TemplateData {
-
+func addDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func renderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var templateCache map[string]*template.Template
 	var err error
 
@@ -44,7 +45,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 
 	buf := new(bytes.Buffer)
 
-	td = addDefaultData(td)
+	td = addDefaultData(td, r)
 
 	err = template.Execute(buf, td)
 	if err != nil {

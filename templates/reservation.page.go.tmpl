@@ -7,20 +7,20 @@
       <h1>
         Search for availability
       </h1>
-      <form action="reservation" method="POST" class="needs-validation" novalidate>
+      <form action="/reservation-availability" method="POST" class="needs-validation" novalidate>
         <div class="form-row mt-5">
           <div class="col">
             <div class="row" id="reservation-date">
               <div class="col">
                 <label for="start">Start date</label>
-                <input required class="form-control" type="text" id="start" name="start" placeholder="Arrival date">
+                <input required class="form-control" type="text" id="start" name="start" placeholder="Arrival date" autocomplete="off">
               </div>
               <div class="invalid-feedback">
                 Please select a correct date
               </div>
               <div class="col">
                 <label for="end">End date</label>
-                <input required class="form-control" type="text" id="end" name="end" placeholder="Departure date">
+                <input required class="form-control" type="text" id="end" name="end" placeholder="Departure date" autocomplete="off">
               </div>
               <div class="invalid-feedback">
                 Please select a correct date
@@ -28,6 +28,7 @@
             </div>
           </div>
         </div>
+        <input hidden type="text" name="csrf_token" value="{{.CSRFToken}}">
         <hr>
         <button type="submit" class="btn btn-primary">Check availability</button>
         <button type="button" id="main-btn" class="btn btn-primary">test</button>

@@ -32,6 +32,7 @@ func NewHandlers(r *Repository) {
 func (repo *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIp := r.RemoteAddr
 	repo.App.Session.Put(r.Context(), "ip", remoteIp)
+	repo.App.Session.Get(r.Context(), "error")
 	renderTemplate(w, r, "home.page.go.tmpl", &models.TemplateData{})
 }
 
@@ -133,4 +134,27 @@ func (repo *Repository) PostMakeReservation(w http.ResponseWriter, r *http.Reque
 
 		return
 	}
+
+	repo.App.Session.Put(r.Context(), "reservation", reservation)
+
+	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
+}
+
+func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
+	reservation, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		log.Println("Cannot get item from session")
+		repo.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	repo.App.Session.Remove(r.Context(), "reservation")
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	renderTemplate(w, r, "reservation_summary.page.go.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }

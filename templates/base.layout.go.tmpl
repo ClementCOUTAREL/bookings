@@ -127,9 +127,8 @@
           icon: icon,
           confirmButtonText: confirmBtnText
         })
-
-
       }
+
       const button = document.getElementById("main-btn").addEventListener("click", function () {
         let html = /*html*/`
           <form id="check-availability-form" action="" method="post" class="needs-validation" novalidate>
@@ -267,6 +266,18 @@
       }
 
     </script>
+
+    {{with .Error}}
+    <script>notify("{{.}}","error")</script>
+    {{end}}
+    
+    {{with .Flash}}
+    <script>notify("{{.}}", "flash")</script>
+    {{ end }}
+    
+    {{ with .Warning}}
+    <script>notify("{{.}}", "warning")</script>
+    {{ end }}
 
     {{ block "script" .}}
     

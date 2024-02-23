@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/coutarel/bookings/internal/config"
 	"github.com/coutarel/bookings/internal/handlers"
+	"github.com/coutarel/bookings/internal/models"
 )
 
 const portNumber = "localhost:8080"
@@ -18,6 +20,7 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
+	gob.Register(models.Reservation{})
 
 	app.InProduction = false
 

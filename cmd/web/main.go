@@ -20,6 +20,25 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.HandleFunc("/", handlers.Repo.Home)
+	http.HandleFunc("/about", handlers.Repo.About)
+
+	fmt.Printf("Starting application on port %s", portNumber)
+	server := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
+
+	err = server.ListenAndServe()
+	log.Fatal(err)
+}
+
+func run() error {
 	gob.Register(models.Reservation{})
 
 	app.InProduction = false
@@ -44,15 +63,5 @@ func main() {
 	handlers.NewHandlers(repo)
 	handlers.NewTemplates(&app)
 
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
-
-	fmt.Printf("Starting application on port %s", portNumber)
-	server := &http.Server{
-		Addr:    portNumber,
-		Handler: routes(&app),
-	}
-
-	err = server.ListenAndServe()
-	log.Fatal(err)
+	return nil
 }

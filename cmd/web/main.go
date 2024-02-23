@@ -8,8 +8,8 @@ import (
 	"net/http"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/coutarel/bookings/pkg/config"
-	"github.com/coutarel/bookings/pkg/handlers"
+	"github.com/coutarel/bookings/internal/config"
+	"github.com/coutarel/bookings/internal/handlers"
 )
 
 const portNumber = "localhost:8080"

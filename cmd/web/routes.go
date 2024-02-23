@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/coutarel/bookings/pkg/config"
-	"github.com/coutarel/bookings/pkg/handlers"
+	"github.com/coutarel/bookings/internal/config"
+	"github.com/coutarel/bookings/internal/handlers"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -24,6 +24,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/reservation-availability", handlers.Repo.ReservationAvailability)
 	mux.Post("/reservation-availability", handlers.Repo.PostReservationAvailability)
 	mux.Get("/make_reservation", handlers.Repo.MakeReservation)
+	mux.Post("/make_reservation", handlers.Repo.PostMakeReservation)
 	mux.Get("/contact", handlers.Repo.Contact)
 
 	fileServer := http.FileServer(http.Dir("./static"))

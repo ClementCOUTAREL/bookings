@@ -1,5 +1,7 @@
 package models
 
+import "github.com/coutarel/bookings/internal/forms"
+
 // Template data holds data sent from handlers to the templates
 type TemplateData struct {
 	StringMap map[string]string
@@ -10,4 +12,5 @@ type TemplateData struct {
 	Success   string
 	Error     string
 	Warning   string
+	Form      *forms.Form
 }

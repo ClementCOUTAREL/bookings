@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/coutarel/bookings/pkg/config"
-	"github.com/coutarel/bookings/pkg/models"
+	"github.com/coutarel/bookings/internal/config"
+	"github.com/coutarel/bookings/internal/forms"
+	"github.com/coutarel/bookings/internal/models"
 )
 
 // Repo is the repository variable for the handlers package
@@ -54,7 +55,13 @@ func (repo *Repository) Majors(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, r, "make_reservation.page.go.tmpl", &models.TemplateData{})
+	var emptyReservation models.Reservation
+	data := make(map[string]interface{})
+	data["reservation"] = emptyReservation
+	renderTemplate(w, r, "make_reservation.page.go.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	})
 }
 
 func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
@@ -91,4 +98,39 @@ func (repo *Repository) PostReservationAvailability(w http.ResponseWriter, r *ht
 	w.Header().Set("Content-Type", "application/json")
 
 	w.Write(out)
+}
+
+// PostReservation handles the posting of a reservatrion form
+func (repo *Repository) PostMakeReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName:  r.Form.Get("last_name"),
+		Email:     r.Form.Get("email"),
+		Phone:     r.Form.Get("phone"),
+	}
+
+	form := forms.New(r.PostForm)
+
+	form.Required("first_name", "last_name", "email")
+	form.MinLength("first_name", 3, r)
+	form.MinLength("last_name", 3, r)
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+
+		renderTemplate(w, r, "make_reservation.page.go.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+
+		return
+	}
 }
